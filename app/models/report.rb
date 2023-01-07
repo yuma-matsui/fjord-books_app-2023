@@ -21,6 +21,8 @@ class Report < ApplicationRecord
   validates :title, presence: true
   validates :content, presence: true
 
+  scope :latest_order, -> { order(created_at: :desc) }
+
   def editable?(target_user)
     user == target_user
   end

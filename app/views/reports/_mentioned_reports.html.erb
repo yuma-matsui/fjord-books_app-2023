@@ -1,0 +1,10 @@
+<div>
+  <p>この記事は以下の記事からリンクされています</p>
+  <ul>
+    <% reports.each do |report| %>
+      <li>
+        <%= link_to report.title, report %>
+      </li>
+    <% end %>
+  </ul>
+</div>
