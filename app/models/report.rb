@@ -31,19 +31,8 @@ class Report < ApplicationRecord
     content.match?(LINK_MATCHER)
   end
 
-  def mention
-    content.scan(LINK_MATCHER).flatten.each_with_object([]) do |report_id, reports|
-      report = Report.find_by(id: report_id)
-      reports.push(report) unless reports.include?(report) || report.nil?
-    end
-  end
-
-  def add_mention(report)
-    mentioning_reports << report
-  end
-
   def save_mentioning_reports
-    mention.each { |mentioning_report| add_mention(mentioning_report) }
+    mention.each { |mentioning_report| mentioning_reports << mentioning_report }
   end
 
   def update_mentioning_reports
@@ -53,5 +42,14 @@ class Report < ApplicationRecord
 
   def created_on
     created_at.to_date
+  end
+
+  private
+
+  def mention
+    content.scan(LINK_MATCHER).flatten.each_with_object([]) do |report_id, reports|
+      report = Report.find_by(id: report_id)
+      reports.push(report) unless reports.include?(report) || report.nil?
+    end
   end
 end
