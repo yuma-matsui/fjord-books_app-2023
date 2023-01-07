@@ -22,7 +22,7 @@ class ReportsController < ApplicationController
     @report = current_user.reports.new(report_params)
 
     if @report.save
-      save_mentioning_reports if @report.including_mention?
+      @report.save_mentioning_reports if @report.including_mention?
       redirect_to @report, notice: t('controllers.common.notice_create', name: Report.model_name.human)
     else
       render :new, status: :unprocessable_entity
@@ -31,6 +31,7 @@ class ReportsController < ApplicationController
 
   def update
     if @report.update(report_params)
+      @report.update_mentioning_reports
       redirect_to @report, notice: t('controllers.common.notice_update', name: Report.model_name.human)
     else
       render :edit, status: :unprocessable_entity
@@ -51,9 +52,5 @@ class ReportsController < ApplicationController
 
   def report_params
     params.require(:report).permit(:title, :content)
-  end
-
-  def save_mentioning_reports
-    @report.mention.each { |mentioning_report| @report.add_mention(mentioning_report) }
   end
 end
