@@ -42,8 +42,13 @@ class Report < ApplicationRecord
     mentioning_reports << report
   end
 
-  def remove_mention(report)
-    active_mentioning.find_by(mentioning_report_id: report.id).destroy!
+  def save_mentioning_reports
+    mention.each { |mentioning_report| add_mention(mentioning_report) }
+  end
+
+  def update_mentioning_reports
+    active_mentioning.each(&:destroy!)
+    save_mentioning_reports
   end
 
   def created_on
