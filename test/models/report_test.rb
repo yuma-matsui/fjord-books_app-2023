@@ -58,26 +58,21 @@ class ReportTest < ActiveSupport::TestCase
 
   test "should count up MentioningMentionedReport when report is updated with content mentioning other report's url" do
     assert_difference 'MentioningMentionedReport.count', 1 do
-      @report.update(content: @other_report_url)
-      @report.update_mentioning_reports
+      @report.update_report_and_mentioning_reports(content: @other_report_url)
     end
   end
 
   test "should count down MentioningMentionedReport when report is updated without content mentioning other report's url" do
-    @report.update(content: @other_report_url)
-    @report.update_mentioning_reports
+    @report.update_report_and_mentioning_reports(content: @other_report_url)
     assert_difference 'MentioningMentionedReport.count', -1 do
-      @report.update(content: 'test')
-      @report.update_mentioning_reports
+      @report.update_report_and_mentioning_reports(content: 'test')
     end
   end
 
   test 'should not count up MentioningMentionedReport when report is updated with same content' do
-    @report.update(content: @other_report_url)
-    @report.update_mentioning_reports
+    @report.update_report_and_mentioning_reports(content: @other_report_url)
     assert_difference 'MentioningMentionedReport.count', 0 do
-      @report.update(title: 'test')
-      @report.update_mentioning_reports
+      @report.update_report_and_mentioning_reports(title: 'test')
     end
   end
 end

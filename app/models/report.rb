@@ -35,7 +35,8 @@ class Report < ApplicationRecord
     mentioning_reports_in_content.each { |mentioning_report| mentioning_reports << mentioning_report }
   end
 
-  def update_mentioning_reports
+  def update_report_and_mentioning_reports(report_params)
+    update(report_params)
     active_mentioning.each(&:destroy!)
     save_mentioning_reports
   end
