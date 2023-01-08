@@ -5,8 +5,9 @@ require 'test_helper'
 class ReportTest < ActiveSupport::TestCase
   setup do
     @report = FactoryBot.create(:report)
-    @other_report = FactoryBot.create(:report)
     @base_url = 'http://localhost:3000/reports'
+    @other_report_url = "#{@base_url}/#{FactoryBot.create(:report).id}"
+    @unsaved_report = FactoryBot.build(:report)
   end
 
   test "should return false when content does not include other report's url" do
@@ -20,57 +21,71 @@ class ReportTest < ActiveSupport::TestCase
   end
 
   test "should return true when content includes other report's url" do
-    @report.content += "#{@base_url}/10"
+    @report.content += @other_report_url
     assert @report.including_mention?
   end
 
-  test "should return an Array including other report when content includes other report's url" do
-    @report.content += "#{@base_url}/#{@other_report.id}"
-    assert_includes @report.mention, @other_report
+  test "should not count up MentioningMentionedReport when report does not mention other report's url" do
+    assert_difference 'MentioningMentionedReport.count', 0 do
+      @report.save_mentioning_reports
+    end
   end
 
-  test "should return an Array including other reports when content includes some report's url" do
-    @some_report = FactoryBot.create(:report)
-    @report.content += "#{@base_url}/#{@other_report.id},#{@base_url}/#{@some_report.id}"
-    assert_includes @report.mention, @other_report
-    assert_includes @report.mention, @some_report
-  end
-
-  test "should not return an Array including same reports when content includes same report's url" do
-    other_report_url = "#{@base_url}/#{@other_report.id}"
-    @report.content += (other_report_url * 2)
-    assert_equal @report.mention.size, 1
-  end
-
-  test "should not return an Array including report when content includes unexisting report's url" do
-    @report.content += "#{@base_url}/0"
-    assert_equal @report.mention.size, 0
-  end
-
-  test 'should count up MentioningMentionedReport when report mentions other report' do
+  test "should count up MentioningMentionedReport when report mentions other report's url" do
+    @unsaved_report.content += @other_report_url
     assert_difference 'MentioningMentionedReport.count', 1 do
-      @report.add_mention(@other_report)
+      @unsaved_report.save
+      @unsaved_report.save_mentioning_reports
     end
   end
 
-  test "should count down MentioningMentionedReport when content remove other report's url" do
-    @report.add_mention(@other_report)
-    assert_difference 'MentioningMentionedReport.count', -1 do
-      @report.remove_mention(@other_report)
+  test "should count up MentioningMentionedReport once when report mentions another report's url twice" do
+    @unsaved_report.content += (@other_report_url * 2)
+    assert_difference 'MentioningMentionedReport.count', 1 do
+      @unsaved_report.save
+      @unsaved_report.save_mentioning_reports
     end
   end
 
-  test 'should count down MentioningMentionedReport when mentioning report is destroyed' do
-    @report.add_mention(@other_report)
-    assert_difference 'MentioningMentionedReport.count', -1 do
-      @report.destroy!
+  test "should not count up MentioningMentionedReport when report mentions unexisting report's url" do
+    @unsaved_report.content += "#{@base_url}/0"
+    assert_difference 'MentioningMentionedReport.count', 0 do
+      @unsaved_report.save
+      @unsaved_report.save_mentioning_reports
     end
   end
 
-  test 'should count down MentioningMentionedReport when mentioned report is destroyed' do
-    @report.add_mention(@other_report)
+  test "should count up twice MentioningMentionedReport when report mentions multiple report's url" do
+    some_report = FactoryBot.create(:report)
+    @unsaved_report.content += @other_report_url + "#{@base_url}/#{some_report.id}"
+    assert_difference 'MentioningMentionedReport.count', 2 do
+      @unsaved_report.save
+      @unsaved_report.save_mentioning_reports
+    end
+  end
+
+  test "should count up MentioningMentionedReport when report is updated with content mentioning other report's url" do
+    assert_difference 'MentioningMentionedReport.count', 1 do
+      @report.update(content: @other_report_url)
+      @report.update_mentioning_reports
+    end
+  end
+
+  test "should count down MentioningMentionedReport when report is updated without content mentioning other report's url" do
+    @report.update(content: @other_report_url)
+    @report.update_mentioning_reports
     assert_difference 'MentioningMentionedReport.count', -1 do
-      @other_report.destroy!
+      @report.update(content: 'test')
+      @report.update_mentioning_reports
+    end
+  end
+
+  test 'should not count up MentioningMentionedReport when report is updated with same content' do
+    @report.update(content: @other_report_url)
+    @report.update_mentioning_reports
+    assert_difference 'MentioningMentionedReport.count', 0 do
+      @report.update(title: 'test')
+      @report.update_mentioning_reports
     end
   end
 end
