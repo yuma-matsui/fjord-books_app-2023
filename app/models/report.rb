@@ -47,9 +47,9 @@ class Report < ApplicationRecord
   private
 
   def mentioning_reports_in_content
-    content.scan(LINK_MATCHER).flatten.uniq.each_with_object([]) do |report_id, reports|
+    content.scan(LINK_MATCHER).uniq.filter_map do |report_id|
       report = Report.find_by(id: report_id)
-      reports.push(report) unless report.nil?
+      report unless report.nil?
     end
   end
 end
