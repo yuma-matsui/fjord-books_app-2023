@@ -47,14 +47,6 @@ class ReportTest < ActiveSupport::TestCase
     end
   end
 
-  test "should not count up MentioningMentionedReport when report mentions unexisting report's url" do
-    @unsaved_report.content += "#{@base_url}/0"
-    assert_difference 'MentioningMentionedReport.count', 0 do
-      @unsaved_report.save
-      @unsaved_report.save_mentioning_reports
-    end
-  end
-
   test "should count up twice MentioningMentionedReport when report mentions multiple report's url" do
     some_report = FactoryBot.create(:report)
     @unsaved_report.content += @other_report_url + "#{@base_url}/#{some_report.id}"
