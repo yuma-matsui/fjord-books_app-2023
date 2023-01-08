@@ -27,23 +27,21 @@ class ReportTest < ActiveSupport::TestCase
 
   test "should not count up MentioningMentionedReport when report does not mention other report's url" do
     assert_difference 'MentioningMentionedReport.count', 0 do
-      @report.save_mentioning_reports
+      @report.save_report_and_mentioning_reports
     end
   end
 
   test "should count up MentioningMentionedReport when report mentions other report's url" do
     @unsaved_report.content += @other_report_url
     assert_difference 'MentioningMentionedReport.count', 1 do
-      @unsaved_report.save
-      @unsaved_report.save_mentioning_reports
+      @unsaved_report.save_report_and_mentioning_reports
     end
   end
 
   test "should count up MentioningMentionedReport once when report mentions another report's url twice" do
     @unsaved_report.content += (@other_report_url * 2)
     assert_difference 'MentioningMentionedReport.count', 1 do
-      @unsaved_report.save
-      @unsaved_report.save_mentioning_reports
+      @unsaved_report.save_report_and_mentioning_reports
     end
   end
 
@@ -51,8 +49,7 @@ class ReportTest < ActiveSupport::TestCase
     some_report = FactoryBot.create(:report)
     @unsaved_report.content += @other_report_url + "#{@base_url}/#{some_report.id}"
     assert_difference 'MentioningMentionedReport.count', 2 do
-      @unsaved_report.save
-      @unsaved_report.save_mentioning_reports
+      @unsaved_report.save_report_and_mentioning_reports
     end
   end
 

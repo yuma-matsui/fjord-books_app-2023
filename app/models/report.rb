@@ -31,8 +31,9 @@ class Report < ApplicationRecord
     content.match?(LINK_MATCHER)
   end
 
-  def save_mentioning_reports
-    mentioning_reports_in_content.each { |mentioning_report| mentioning_reports << mentioning_report }
+  def save_report_and_mentioning_reports
+    save
+    save_mentioning_reports if including_mention?
   end
 
   def update_report_and_mentioning_reports(report_params)
@@ -52,5 +53,9 @@ class Report < ApplicationRecord
       report = Report.find_by(id: report_id)
       report unless report.nil?
     end
+  end
+
+  def save_mentioning_reports
+    mentioning_reports_in_content.each { |mentioning_report| mentioning_reports << mentioning_report }
   end
 end
