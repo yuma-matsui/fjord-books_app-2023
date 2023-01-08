@@ -4,8 +4,8 @@
 
 <%= render 'shared/comments', commentable: @report %>
 
-<% if mentioned?(@report) %>
-  <%= render 'mentioned_reports', reports: mentioned_reports(@report) %>
+<% if @report.mentioned_reports.exists? %>
+  <%= render 'mentioned_reports', reports: @report.mentioned_reports.latest_order %>
 <% end %>
 
 <div>
