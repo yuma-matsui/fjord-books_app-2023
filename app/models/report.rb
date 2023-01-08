@@ -32,7 +32,7 @@ class Report < ApplicationRecord
   end
 
   def save_mentioning_reports
-    mention.each { |mentioning_report| mentioning_reports << mentioning_report }
+    mentioning_reports_in_content.each { |mentioning_report| mentioning_reports << mentioning_report }
   end
 
   def update_mentioning_reports
@@ -46,7 +46,7 @@ class Report < ApplicationRecord
 
   private
 
-  def mention
+  def mentioning_reports_in_content
     content.scan(LINK_MATCHER).flatten.each_with_object([]) do |report_id, reports|
       report = Report.find_by(id: report_id)
       reports.push(report) unless reports.include?(report) || report.nil?
