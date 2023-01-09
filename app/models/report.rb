@@ -48,14 +48,13 @@ class Report < ApplicationRecord
 
   private
 
-  def mentioning_reports_in_content
-    content.scan(LINK_MATCHER).uniq.filter_map do |report_id|
-      report = Report.find_by(id: report_id)
-      report unless report.nil?
-    end
-  end
-
   def save_mentioning_reports
-    mentioning_reports_in_content.each { |mentioning_report| mentioning_reports << mentioning_report }
+    content
+      .scan(LINK_MATCHER)
+      .uniq
+      .each do |report_id|
+        report = Report.find_by(id: report_id)
+        mentioning_reports << report if report
+      end
   end
 end
