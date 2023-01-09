@@ -10,21 +10,6 @@ class ReportTest < ActiveSupport::TestCase
     @unsaved_report = FactoryBot.build(:report)
   end
 
-  test "should return false when content does not include other report's url" do
-    @report.content = "this report does not include report's url"
-    assert_not @report.including_mention?
-  end
-
-  test "should return false when content includes other site's url" do
-    @report.content = 'https://google.com'
-    assert_not @report.including_mention?
-  end
-
-  test "should return true when content includes other report's url" do
-    @report.content += @other_report_url
-    assert @report.including_mention?
-  end
-
   test "should not count up MentioningMentionedReport when report does not mention other report's url" do
     assert_difference 'MentioningMentionedReport.count', 0 do
       @report.save_report_and_mentioning_reports

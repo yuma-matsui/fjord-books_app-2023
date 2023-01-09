@@ -27,10 +27,6 @@ class Report < ApplicationRecord
     user == target_user
   end
 
-  def including_mention?
-    content.match?(LINK_MATCHER)
-  end
-
   def save_report_and_mentioning_reports
     transaction do
       save!
