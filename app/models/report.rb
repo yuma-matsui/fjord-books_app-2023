@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Report < ApplicationRecord
-  LINK_MATCHER = %r{http://localhost:3000/reports/([1-9]+[0-9]*)}
+  LINK_MATCHER = %r{http://localhost:3000/reports/(\d+)}
 
   belongs_to :user
   has_many :comments, as: :commentable, dependent: :destroy
