@@ -6,6 +6,8 @@
 
 <% if @report.mentioned_reports.exists? %>
   <%= render 'mentioned_reports', reports: @report.mentioned_reports.latest_order %>
+<% else %>
+  <p>この日報がリンクされている日報はありません</p>
 <% end %>
 
 <div>
