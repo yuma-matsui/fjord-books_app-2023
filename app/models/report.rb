@@ -32,14 +32,18 @@ class Report < ApplicationRecord
   end
 
   def save_report_and_mentioning_reports
-    save
-    save_mentioning_reports if including_mention?
+    transaction do
+      save!
+      save_mentioning_reports
+    end
   end
 
   def update_report_and_mentioning_reports(report_params)
-    update(report_params)
-    active_mentioning.each(&:destroy!)
-    save_mentioning_reports
+    transaction do
+      update!(report_params)
+      active_mentioning.each(&:destroy!)
+      save_mentioning_reports
+    end
   end
 
   def created_on
