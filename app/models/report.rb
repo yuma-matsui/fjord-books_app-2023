@@ -28,22 +28,26 @@ class Report < ApplicationRecord
   end
 
   def save_report_and_mentioning_reports
-    saved = true
     transaction do
-      saved &= save
+      save!
       save_mentioning_reports
     end
-    saved
+  rescue ActiveRecord::RecordInvalid => e
+    raise ActiveRecord::Rollback if save_mentioning_reports_failed?(e)
+
+    false
   end
 
   def update_report_and_mentioning_reports(report_params)
-    updated = true
     transaction do
-      updated &= update(report_params)
+      update!(report_params)
       active_mentioning.each(&:destroy!)
       save_mentioning_reports
     end
-    updated
+  rescue ActiveRecord::RecordInvalid => e
+    raise ActiveRecord::Rollback if save_mentioning_reports_failed?(e)
+
+    false
   end
 
   def created_on
@@ -60,5 +64,9 @@ class Report < ApplicationRecord
         report = Report.find_by(id: report_id)
         mentioning_reports << report if report
       end
+  end
+
+  def save_mentioning_reports_failed?(error)
+    error.message == 'バリデーションに失敗しました: Mentioning reportはすでに存在します'
   end
 end
