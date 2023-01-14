@@ -244,6 +244,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
+    rinku (2.0.6)
     rubocop (1.42.0)
       json (~> 2.3)
       parallel (~> 1.10)
@@ -337,6 +338,7 @@ DEPENDENCIES
   letter_opener_web
   puma (~> 5.0)
   rails (~> 7.0.4)
+  rinku
   rubocop-fjord
   rubocop-rails
   selenium-webdriver
