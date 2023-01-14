@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :report do
-    title   { Faker::Lorem.word }
-    content { Faker::Lorem.paragraph }
+    title   { 'My report' }
+    content { 'My first report.' }
     user
   end
 end
