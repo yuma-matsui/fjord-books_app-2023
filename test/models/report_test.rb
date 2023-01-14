@@ -5,8 +5,7 @@ require 'test_helper'
 class ReportTest < ActiveSupport::TestCase
   setup do
     @report = FactoryBot.create(:report)
-    @base_url = 'http://localhost:3000/reports'
-    @other_report_url = "#{@base_url}/#{FactoryBot.create(:report).id}"
+    @other_report_url = "http://localhost:3000/reports/#{FactoryBot.create(:report).id}"
     @unsaved_report = FactoryBot.build(:report)
   end
 
@@ -32,7 +31,7 @@ class ReportTest < ActiveSupport::TestCase
 
   test "should count up twice MentioningMentionedReport when report mentions multiple report's url" do
     some_report = FactoryBot.create(:report)
-    @unsaved_report.content += @other_report_url + "#{@base_url}/#{some_report.id}"
+    @unsaved_report.content += @other_report_url + "http://localhost:3000/reports/#{some_report.id}"
     assert_difference 'MentioningMentionedReport.count', 2 do
       @unsaved_report.save_report_and_mentioning_reports
     end
