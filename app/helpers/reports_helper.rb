@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module ReportsHelper
-  def format_mention(text)
-    text.gsub(Report::LINK_MATCHER) do |url|
-      target = Report.find_by(id: Regexp.last_match(1))
-      target.nil? ? url : tag.a(url, href: url)
-    end
+  def change_to_link(text)
+    text.gsub(%r{https?://[\w/.:-\\+%&_-][^<>]+}) { |url| tag.a(url, href: url) }
   end
 end
