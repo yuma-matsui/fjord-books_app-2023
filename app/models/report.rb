@@ -27,27 +27,17 @@ class Report < ApplicationRecord
     user == target_user
   end
 
-  def save_report_and_mentioning_reports
+  def save_or_update_report_and_mentionings(report_params = nil)
     saved = true
     transaction do
+      assign_attributes(report_params) if report_params
       saved &= save
       raise ActiveRecord::Rollback unless saved
-
-      save_mentioning_reports
-    end
-    saved
-  end
-
-  def update_report_and_mentioning_reports(report_params)
-    updated = true
-    transaction do
-      updated &= update(report_params)
-      raise ActiveRecord::Rollback unless updated
 
       active_mentioning.each(&:destroy!)
       save_mentioning_reports
     end
-    updated
+    saved
   end
 
   def created_on
