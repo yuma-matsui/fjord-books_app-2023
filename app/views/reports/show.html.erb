@@ -5,7 +5,7 @@
 <%= render 'shared/comments', commentable: @report %>
 
 <% if reports = @report.mentioned_reports.presence %>
-  <%= render 'mentioned_reports', reports: reports %>
+  <%= render 'mentioned_reports', reports: reports.latest_order %>
 <% else %>
   <p>この日報がリンクされている日報はありません</p>
 <% end %>
