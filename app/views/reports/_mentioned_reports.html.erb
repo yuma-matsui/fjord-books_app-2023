@@ -1,0 +1,8 @@
+<p>この日報は以下の日報からリンクされています</p>
+<ul>
+  <% reports.each do |report| %>
+    <li>
+      <%= link_to report.title, report %>
+    </li>
+  <% end %>
+</ul>

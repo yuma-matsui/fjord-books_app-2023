@@ -120,6 +120,11 @@ GEM
       rubocop
       smart_properties
     erubi (1.12.0)
+    factory_bot (6.2.1)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
     faker (3.0.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
@@ -223,6 +228,8 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.4)
       loofah (~> 2.19, >= 2.19.1)
+    rails_autolink (1.1.7)
+      rails (> 3.1)
     railties (7.0.4)
       actionpack (= 7.0.4)
       activesupport (= 7.0.4)
@@ -312,6 +319,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-darwin-22
 
 DEPENDENCIES
   bootsnap
@@ -321,6 +329,7 @@ DEPENDENCIES
   devise
   devise-i18n
   erb_lint
+  factory_bot_rails
   faker
   i18n_generators
   image_processing (~> 1.2)
@@ -330,6 +339,7 @@ DEPENDENCIES
   letter_opener_web
   puma (~> 5.0)
   rails (~> 7.0.4)
+  rails_autolink
   rubocop-fjord
   rubocop-rails
   selenium-webdriver
